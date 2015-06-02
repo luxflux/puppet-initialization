@@ -6,7 +6,11 @@ authorized_keys_url='https://raw.githubusercontent.com/luxflux/puppet-initializa
 password=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;)
 
 set -x
-useradd -m -s /bin/bash admin
+
+if [ -z "$(getent passwd admin)" ]; then
+  useradd -m -s /bin/bash admin
+fi
+
 echo "admin:${password}" | sudo chpasswd
 
 mkdir -p -m 700 ~admin/.ssh
